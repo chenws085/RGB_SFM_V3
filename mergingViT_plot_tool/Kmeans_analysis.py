@@ -313,10 +313,12 @@ def _fallback_label_names(dataset_name):
 
 class ViTAnalyzer:
     def __init__(
-        self, model, dataloader, img_size=28, device='cuda',
+        self, model, dataloader, img_size=28, device=None,
         display_mean=None, display_std=None, dataset_name=None,
         inference_dataloader=None,
     ):
+        if device is None:
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model = model.to(device).eval()
         self.dataloader = dataloader
         self.inference_dataloader = (

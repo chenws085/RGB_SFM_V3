@@ -293,6 +293,8 @@ _MERGING_VIT_ALLOWED_ARGS = {
 
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
+CIFAR10_MEAN = (0.4914, 0.4822, 0.4465)
+CIFAR10_STD = (0.2470, 0.2435, 0.2616)
 
 
 def _validate_mergingvit_model_args(model_args=None, model_name=None):
@@ -379,10 +381,12 @@ def _fallback_label_names(dataset_name):
 
 class ViTAnalyzer:
     def __init__(
-        self, model, dataloader, img_size=28, device='cuda',
+        self, model, dataloader, img_size=28, device=None,
         display_mean=None, display_std=None, dataset_name=None,
         inference_dataloader=None,
     ):
+        if device is None:
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model = model.to(device).eval()
         self.dataloader = dataloader
         self.inference_dataloader = (
@@ -3051,8 +3055,12 @@ def run_colored_mnist_analysis(
         input_size=(img_size, img_size)
     )
     analysis_loader = test_loader if dataset == 'Caltech101' else train_loader
-    display_mean = IMAGENET_MEAN if dataset == 'Caltech101' else None
-    display_std = IMAGENET_STD if dataset == 'Caltech101' else None
+    if dataset == 'Caltech101':
+        display_mean, display_std = IMAGENET_MEAN, IMAGENET_STD
+    elif dataset == 'CIFAR10':
+        display_mean, display_std = CIFAR10_MEAN, CIFAR10_STD
+    else:
+        display_mean, display_std = None, None
     
     _patch = patch_size
     _embed = [64, 128, 256, 512]

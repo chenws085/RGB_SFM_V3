@@ -51,7 +51,7 @@ class CIFAR10(Dataset):
         
         images = images.reshape(images.shape[0], 3, 32, 32)
         images = images.transpose(0,2,3,1)
-        labels = np.eye(10)[labels]
+        labels = np.asarray(labels, dtype=np.int64)
         return images, labels
     
     def _load_test_data(self):
@@ -60,7 +60,7 @@ class CIFAR10(Dataset):
         labels = dict[b'labels']
         images = images.reshape(images.shape[0], 3, 32, 32)
         images = images.transpose(0,2,3,1)
-        labels = np.eye(10)[labels]
+        labels = np.asarray(labels, dtype=np.int64)
         return images, labels
         
     def __getitem__(self, index: int) -> Tuple[Any, Any]:

@@ -25,6 +25,7 @@ from .Colorful_MNIST import Colorful_MNIST
 from torchvision import transforms
 from .Caltech101 import Caltech101Dataset
 from .NonclassicFace import NonclassicFaceDataset
+from .SyntheticShapes import SyntheticShapesDataset
 dataset_classes = {
     'mnist': MNISTDataset,
     'MultiColor_Shapes_Database': MultiColorShapesDataset,
@@ -52,6 +53,7 @@ dataset_classes = {
     'PreprocessedRetinaMNIST224' : PreprocessedRetinaMNIST224,
     'Caltech101' : Caltech101Dataset,
     'NonclassicFace': NonclassicFaceDataset,
+    'SyntheticShapes': SyntheticShapesDataset,
 }
 
 
@@ -77,6 +79,24 @@ def get_dataloader(dataset, root: str = '.', batch_size=32, input_size: tuple = 
                 transforms.CenterCrop(input_size[0]),               # ← 比直接 Resize 好
                 transforms.ToTensor(),
                 transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),  # ← 加上
+            ])
+        elif dataset == 'CIFAR10':
+            # Standard CIFAR-10 augmentation and channel statistics.
+            train_transform = transforms.Compose([
+                transforms.RandomCrop(32, padding=4),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize(
+                    (0.4914, 0.4822, 0.4465),
+                    (0.2470, 0.2435, 0.2616),
+                ),
+            ])
+            test_transform = transforms.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(
+                    (0.4914, 0.4822, 0.4465),
+                    (0.2470, 0.2435, 0.2616),
+                ),
             ])
         else:
             common_transforms = [

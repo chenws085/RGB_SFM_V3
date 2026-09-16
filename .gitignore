@@ -3,6 +3,7 @@ doc/
 result_pth/
 data/
 .ipynb_checkpoints/
+.venv*/
 __pycache__/
 wandb/
 test/
