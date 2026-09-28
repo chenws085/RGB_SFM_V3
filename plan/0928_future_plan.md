@@ -102,19 +102,19 @@ STEGO 的 clustering 是無監督語意分割系統的一部分；本研究的 c
 4. 訓練完成後的代表圖距離與 inference `predict` 都直接使用原始 `kmeans.cluster_centers_`。
 5. `scripts/test_caltech_translation_kmeans.py` 第 394 行雖然另行正規化 centroid，但只用於計算報告中的 cosine 指標；cluster fitting、`predict` 與 `transform` 仍使用未正規化的 sklearn centroids。
 
-scikit-learn 的標準 K-means 將中心更新為群內樣本的算術平均。即使每個樣本 (x_i) 都滿足 (\|x_i\|_2=1)，其平均值
+scikit-learn 的標準 K-means 將中心更新為群內樣本的算術平均。即使每個樣本 $x_i$ 都滿足 $\|x_i\|_2=1$，其平均值
 
 \[
 \mu_k=\frac{1}{|C_k|}\sum_{i\in C_k}x_i
 \]
 
-通常仍滿足 (\|\mu_k\|_2<1)。標準 K-means 的指派距離為：
+通常仍滿足 $\|\mu_k\|_2<1$。標準 K-means 的指派距離為：
 
 \[
 \|x-\mu_k\|_2^2=1+\|\mu_k\|_2^2-2x^\top\mu_k.
 \]
 
-其中包含會因 cluster 而異的 (\|\mu_k\|_2^2)；spherical K-means 則會將中心正規化成 (\hat{\mu}_k=\mu_k/\|\mu_k\|_2)，再依 (x^\top\hat{\mu}_k) 指派。因此，只有在所有 centroid 也保持單位長度等附加條件下，才可把兩者視為相同；目前實作不滿足此條件。
+其中包含會因 cluster 而異的 $\|\mu_k\|_2^2$；spherical K-means 則會將中心正規化成 $\hat{\mu}_k=\mu_k/\|\mu_k\|_2$，再依 $x^\top\hat{\mu}_k$ 指派。因此，只有在所有 centroid 也保持單位長度等附加條件下，才可把兩者視為相同；目前實作不滿足此條件。
 
 ### 4.2 現有模型的實測證據
 
@@ -138,6 +138,79 @@ scikit-learn 的標準 K-means 將中心更新為群內樣本的算術平均。�
 > 本研究先對每個特徵向量進行 L2 正規化，再使用標準歐氏距離 K-means 進行聚類。對任意兩個已正規化的樣本向量，平方歐氏距離與餘弦相似度具有單調對應關係。須注意，本實作的群中心為群內樣本的算術平均，更新後未重新投影至單位超球面，因此屬於 normalized-feature Euclidean K-means，而非嚴格的 spherical K-means。
 
 若後續希望使用「spherical K-means」名稱，需改成每次中心更新後都重新正規化 centroid，並與目前方法進行消融比較。
+
+### 4.3 第一篇論文第 3.3.2 節查核
+
+第一篇論文「餘弦等價 K-means」一節屬於**部分正確，但核心結論過度延伸**。逐項判定如下：
+
+| 原論文敘述 | 判定 | 說明 |
+|---|---|---|
+| 先對 feature 進行 L2 normalization | 正確 | 與目前原始碼一致 |
+| 正規化後的非零樣本位於單位超球面 | 正確 | 零向量為例外 |
+| 兩個單位向量的平方歐氏距離與 cosine similarity 單調等價 | 正確 | 應明確寫成平方範數 $\|u-v\|_2^2$ |
+| 實作使用 Euclidean K-means | 正確 | 使用 `sklearn.cluster.KMeans` |
+| 聚類結果與 spherical K-means 在數學上一致 | 不正確 | sklearn centroid 更新後沒有重新正規化 |
+| 當 $K>M$ 時自動將有效 K 降為 M | 正確 | `_effective_n_clusters()` 有此處理 |
+| 正規化實作為 $f/(\|f\|_2+\epsilon)$ | 與原始碼不完全一致 | 程式使用 sklearn `normalize()`，沒有直接在分母加上指定的 $\epsilon$ |
+
+#### 4.3.1 原式（3.21）修正
+
+原文必須將左側清楚排版成平方歐氏距離：
+
+\[
+\|u-v\|_2^2
+=\|u\|_2^2+\|v\|_2^2-2u^\top v
+=2-2\cos\theta.
+\]
+
+這個式子只證明兩個單位向量的成對距離具有單調對應，不能單獨證明包含 centroid 更新的完整 K-means 演算法與 spherical K-means 相同。
+
+#### 4.3.2 原式（3.22）修正
+
+目前原始碼使用 sklearn L2 normalization。若要忠實描述實作，應寫成：
+
+\[
+\hat f=
+\begin{cases}
+\dfrac{f}{\|f\|_2}, & \|f\|_2>0,\\[6pt]
+0, & \|f\|_2=0.
+\end{cases}
+\]
+
+不建議一方面將分母寫成 $\|f\|_2+\epsilon$，另一方面宣稱向量被嚴格投影至 unit hypersphere，因為加入 $\epsilon$ 後，非零向量的 norm 也不會精確等於 1。若論文一定要保留 $\epsilon$ 公式，程式亦應改成相同的明確實作，並將文字改為「近似單位長度」。
+
+#### 4.3.3 原式（3.23）修正
+
+建議用平方距離表示標準 K-means assignment，並補齊 stage、position 與 cluster 的 centroid 索引：
+
+\[
+\ell_n^{(i,b)}(m)
+=\arg\min_{k\in\{0,\ldots,K_n^{(i,b)}-1\}}
+\left\|
+\hat F_{m,n}^{(i,b)}-\mu_{n,k}^{(i,b)}
+\right\|_2^2.
+\]
+
+centroid 應定義為正規化樣本的算術平均：
+
+\[
+\mu_{n,k}^{(i,b)}
+=\frac{1}{|C_{n,k}^{(i,b)}|}
+\sum_{m\in C_{n,k}^{(i,b)}}
+\hat F_{m,n}^{(i,b)},
+\]
+
+並註明 $\|\mu_{n,k}^{(i,b)}\|_2$ 不一定等於 1。平方與未平方距離的最近中心相同，但平方形式與標準 K-means objective 及 sklearn inertia 的定義一致。
+
+#### 4.3.4 第一篇論文建議替換文字
+
+建議將章節名稱由「餘弦等價 K-means」改成「正規化特徵空間中的 Euclidean K-means」，並將方法描述替換為：
+
+> Transformer 的 patch feature 可能具有明顯的範數差異。若直接在原始特徵空間中使用歐氏距離，聚類結果可能同時受到特徵方向與向量範數影響。為降低範數差異的影響，本研究先對每個非零特徵向量進行 L2 正規化，再於正規化後的特徵空間中執行標準 Euclidean K-means。
+>
+> 對任意兩個單位向量 $u,v$，其平方歐氏距離滿足 $\|u-v\|_2^2=2-2u^\top v=2-2\cos\theta$。因此，正規化樣本之間的平方歐氏距離與餘弦相似度具有單調對應關係。須注意，本研究使用的標準 K-means 將各群中心更新為群內正規化樣本的算術平均，並未在每次更新後將中心重新投影至單位超球面。因此，本方法應視為 L2-normalized feature space 中的 Euclidean K-means，而非嚴格的 spherical K-means；兩者的聚類結果不保證完全一致。
+
+原文「Transformer 的 patch feature 向量通常具有較高的範數變異性」屬於經驗性主張。正式論文應補上相關文獻，或報告本研究資料的 feature-norm 分布與 raw-feature K-means 消融；若缺乏證據，應改成較保守的「可能具有明顯的範數差異」。
 
 ## 五、由方法差異導出的後續實驗
 
