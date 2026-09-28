@@ -1414,7 +1414,8 @@ class ViTAnalyzer:
         
         for i, p in enumerate(positions):
             X = features[:, p, :].numpy()  # [N_samples, C]
-            # 先將特徵投影到單位球面，Euclidean KMeans 即可等價近似 cosine 分群
+            # 先將樣本投影到單位球面，再執行標準 Euclidean KMeans。
+            # 注意：sklearn 的 centroid 是未重新正規化的算術平均，因此這不是嚴格的 spherical K-means。
             X_norm = normalize(X, norm='l2', axis=1)
             kmeans = KMeans(n_clusters=n_clusters, random_state=random_state).fit(X_norm)
             kmeans_dict[p] = kmeans
@@ -1434,7 +1435,7 @@ class ViTAnalyzer:
         positions=None, heads=None, show_progress=True
     ):
         """
-        對每個 (position, head) 的向量獨立做 K-means（cosine-equivalent）。
+        對每個 (position, head) 的 L2-normalized 向量獨立做 Euclidean K-means。
 
         Args:
             features_heads: [N_samples, N, num_heads, head_dim]
@@ -1465,7 +1466,7 @@ class ViTAnalyzer:
         for p in positions:
             for h in heads:
                 X = features_heads[:, p, h, :].numpy()  # [N_samples, head_dim]
-                # 先 normalize，讓 Euclidean KMeans 等價於 cosine similarity 分群
+                # 樣本先 L2 normalize；centroid 不會投影回單位球面，故不是 spherical K-means。
                 X_norm = normalize(X, norm='l2', axis=1)
                 kmeans = KMeans(n_clusters=n_clusters, random_state=random_state).fit(X_norm)
                 kmeans_dict[(p, h)] = kmeans

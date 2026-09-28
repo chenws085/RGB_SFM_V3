@@ -1,0 +1,90 @@
+針對自監督 Vision Transformer（ViT）特徵進行 K-means 的各項核心研究，其在特徵空間選取、距離度量、群中心初始化與更新、以及分群尺度（單圖 vs. 全域）上的機制與設計差異如下：
+
+
+1. 核心研究之 K-means 流程對比
+維度DINO (ICCV 2021)Deep Spectral Methods (CVPR 2022)TokenCut (CVPR 2022)STEGO (ICLR 2022)處理尺度單圖獨立分群（Single-image）單圖獨立分群（Single-image）單圖二值圖割（Single-image）全域資料集分群（Dataset-wide）輸入特徵向量 $x_i$最後一層 Self-Attention 的 Key ($K$) 向量（比 FFN 輸出更純淨）幾何圖拉普拉斯矩陣之前 $d$ 維特徵向量（Eigenvectors）特徵親和圖（Affinity Graph）的次小廣義特徵向量蒸餾後之非線性壓縮特徵（Non-linear Projector 輸出）預處理 (Preprocessing)排除 [CLS]，進行嚴格 L2 Normalization構建親和矩陣 $W_{ij}$，計算度數矩陣 $D$，求解正規化拉普拉斯矩陣 $L_{sym}$構建邊權重矩陣 $A$ 並實施度數截斷，求解廣義特徵系統特徵正規化並計算全域互相關（Correlation）距離度量Cosine 距離（經 L2 正規化後轉為標準歐氏距離）降維後歐氏空間之標準歐氏距離（Euclidean Distance）一維純量閾值分割（退化為 1D 2-means）Cosine 相似度 / 歐氏距離K 值設定小規模：$K \in \{2, 3, 4, 6\}$中小規模：$K \in [2, 10]$（依目標物體數量而定）固定 $K = 2$（顯著前景 vs. 背景）全域語意類別數：$K = 27$（Cityscapes）或 $K \in [15, 20]$（VOC）群中心初始化K-means++（隨機選首中心，後續以距離平方比例採樣）K-means++ 或標準隨機初始化由 Fiedler 向量的符號（正負）或 Otsu 自適應閾值直接給出初始二分點Mini-batch 隨機抽樣或全域 K-means++
+2. 各研究詳細流程與數學定義
+A. DINO (Caron et al., 2021)
+特徵抽取：
+
+給定解析度為 $H \times W$ 的影像，Patch 大小為 $P \times P$，共產生 $N = \frac{HW}{P^2}$ 個 Patch。
+
+不使用最終 Transformer Block 輸出的 Patch Embeddings，而是抽取最後一層 Multi-Head Attention 的 Key 矩陣 $K \in \mathbb{R}^{N \times D}$（或各 Head 的平均 Key），以規避 FFN 造成的空間高頻雜訊。
+
+距離度量與群中心：
+
+向量先經過單位化：$\hat{x}_i = \frac{x_i}{\Vert{}x_i\Vert{}_2}$。
+
+距離採用餘弦距離，在單位球面上等價於半平方歐氏距離：
+
+$$D(\hat{x}_i, \mu_k) = 1 - \hat{x}_i^\top \mu_k = \frac{1}{2}\Vert{}\hat{x}_i - \mu_k\Vert{}_2^2$$
+群中心更新：
+第 $k$ 個群集 $C_k$ 的中心 $\mu_k$ 為該群成員之均值並重新投影至單位球面：
+
+$$\mu_k = \frac{\sum_{i \in C_k} \hat{x}_i}{\Vert{}\sum_{i \in C_k} \hat{x}_i\Vert{}_2}$$
+物理意涵：
+
+當 $K=2$ 時，主要群集中心自然分離「前景主體」與「背景」；
+
+當 $K \ge 4$ 時，群中心分別對齊物件的不同語意部位（如動物的頭、身體、四肢）。
+
+B. Deep Spectral Methods (Melas-Kyriazi et al., 2022)
+為何不直接在特徵跑 K-means：
+
+原始 Patch 特徵包含背景高頻偽影（Register Artifacts）與光照變化，高維歐氏距離易受維度災難干擾。
+
+特徵轉換流程：
+
+親和矩陣構建：利用 ViT 倒數第二層或最後一層的 Keys/Tokens $F \in \mathbb{R}^{N \times D}$ 計算餘弦相似度矩陣 $W$：
+
+$$W_{ij} = \max\left(0, \frac{F_i \cdot F_j}{\Vert{}F_i\Vert{} \Vert{}F_j\Vert{}}\right)$$
+圖拉普拉斯映射：定義度數矩陣 $D_{ii} = \sum_j W_{ij}$，構造正規化對稱拉普拉斯矩陣：
+
+$$L_{sym} = I - D^{-1/2} W D^{-1/2}$$
+降維投影：求解前 $d$ 個非零最小特徵值對應的特徵向量 $U \in \mathbb{R}^{N \times d}$。每一列 $y_i \in \mathbb{R}^d$ 代表第 $i$ 個 Patch 在低維流形上的座標。
+
+K-means 聚類：
+
+直接在低維連續空間 $Y = [y_1, y_2, \dots, y_N]$ 上執行標準歐氏距離 K-means：
+
+$$\arg\min_{\{C_k\}} \sum_{k=1}^K \sum_{y_i \in C_k} \Vert{}y_i - \mu_k\Vert{}_2^2$$
+群中心 $\mu_k = \frac{1}{\vert{}C_k\vert{}}\sum_{y_i \in C_k} y_i$。此舉將空間連續性與語意相關性自然融合，邊界平滑度顯著超越直接特徵分群。
+
+C. TokenCut (Wang et al., 2022)
+二值圖割簡化為 1D 分群：
+
+核心目標為顯著物體檢測（Salient Object Detection），其 $K$ 嚴格限定為 $2$。
+
+利用 Normalized Cut 目標，將圖的劃分轉化為求解廣義特徵問題：
+
+$$(D - A) v = \lambda D v$$
+提取第二小特徵值對應的特徵向量 $v_2 \in \mathbb{R}^N$（即 Fiedler 向量）。此時每個 Patch 投影為一個一維純量值 $v_2(i)$。
+
+K-means 實作：
+
+在一維陣列 $v_2$ 上尋找最佳分割點 $\tau$，將空間劃分為 $C_1 = \{i \mid v_2(i) \le \tau\}$ 與 $C_2 = \{i \mid v_2(i) > \tau\}$。
+
+此時群中心為純量標量：
+
+$$\mu_1 = \frac{1}{\vert{}C_1\vert{}}\sum_{i \in C_1} v_2(i), \quad \mu_2 = \frac{1}{\vert{}C_2\vert{}}\sum_{i \in C_2} v_2(i)$$
+亦可直接以兩點群集方差最小化進行快速收斂，避免高維度疊代。
+
+D. STEGO (Hamilton et al., 2022)
+全域無監督語意聚類（Dataset-level）：
+
+前述研究多針對「單張影像內部」進行分群，無法保證影像 A 的群集 1 與影像 B 的群集 1 具有相同的語意類別。STEGO 解決跨圖像的語意一致性。
+
+流程機制：
+
+特徵蒸餾：ViT 輸出的高維特徵輸入至非線性微型投影網絡（Feature Projector），保留幾何結構的同時消除通道冗餘。
+
+特徵抽樣與緩存：從整個訓練集抽樣數百萬個 Patch 嵌入點，全部進行 L2 正規化。
+
+Mini-Batch Spherical K-means：
+
+距離：球面餘弦距離 $D(x, \mu) = 1 - x^\top \mu$。
+
+群中心更新：
+
+$$\mu_k^{(t+1)} = \text{Normalize}\left(\mu_k^{(t)} + \eta \sum_{x_i \in C_k} (x_i - \mu_k^{(t)})\right)$$
+將收斂後的 $K$ 個群中心固定為全域 Codebook，推論時單圖各 Patch 僅需計算與這 $K$ 個中心的內積，以 $\arg\max_k (x_i^\top \mu_k)$ 直出分割標籤。
