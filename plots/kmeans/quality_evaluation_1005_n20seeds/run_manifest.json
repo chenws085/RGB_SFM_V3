@@ -1,0 +1,32 @@
+{
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61
+  ],
+  "n_init": 50,
+  "k": 31,
+  "max_iter": 300,
+  "legacy_coordinates": true,
+  "source_sha256": "beebe9c44e0af0d29f30e1f47eabe2fa2f4ab4edc4abafb1787a6b7b83158cf0",
+  "heldout_sha256": "2ed933f1c385ea421bcca5d6d833e404683bf96f6c2f1551c03d40961e174f08",
+  "policy": "Fixed 20 seeds, all stages/methods; no significance-based stopping; reused pilot seeds 42-44, exploratory inference.",
+  "inference": "paired seed t-test with Holm correction across six comparisons; crossed seed/image bootstrap, frozen pairwise distances"
+}

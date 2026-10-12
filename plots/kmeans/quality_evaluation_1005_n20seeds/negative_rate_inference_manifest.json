@@ -1,0 +1,32 @@
+{
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61
+  ],
+  "bootstrap_repetitions": 10000,
+  "bootstrap_seed": 20261007,
+  "exact_signflip_patterns": 1048576,
+  "alternative": "two-sided",
+  "alpha": 0.05,
+  "comparison_family": "six negative-rate contrasts only; excludes earlier mean-silhouette tests",
+  "legacy_coordinates": true,
+  "frozen_silhouette_reference_geometry": true
+}

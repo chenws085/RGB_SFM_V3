@@ -1,0 +1,14 @@
+{
+  "seed": 42,
+  "per_bin": 3,
+  "near_zero": 0.05,
+  "methods": [
+    "sklearn_existing",
+    "spherical",
+    "faiss_native"
+  ],
+  "groups": 279,
+  "selection": "most negative and highest positive first; near-zero excludes already selected IDs; no duplicates within group; no out-of-bin fallback",
+  "source": "plots/kmeans/quality_evaluation_1005/heldout_sample_metrics.csv",
+  "pixel_note": "token grid footprint, not full attention receptive field"
+}

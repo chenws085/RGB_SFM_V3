@@ -1,0 +1,53 @@
+{
+  "input": "plots/kmeans/quality_evaluation_1005/heldout_sample_metrics.csv",
+  "methods": [
+    "sklearn_existing",
+    "spherical",
+    "faiss_native"
+  ],
+  "panels": [
+    [
+      0,
+      42
+    ],
+    [
+      0,
+      43
+    ],
+    [
+      0,
+      44
+    ],
+    [
+      1,
+      42
+    ],
+    [
+      1,
+      43
+    ],
+    [
+      1,
+      44
+    ],
+    [
+      2,
+      42
+    ],
+    [
+      2,
+      43
+    ],
+    [
+      2,
+      44
+    ]
+  ],
+  "x_limits": [
+    -0.55,
+    0.9500000000000001
+  ],
+  "score": "cosine silhouette",
+  "order": "cluster ID ascending; score ascending within each cluster",
+  "note": "Each plot uses one seed; no sample scores averaged across different partitions."
+}
