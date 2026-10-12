@@ -1,0 +1,7 @@
+{
+  "n_samples": 300,
+  "graph_connected_components": 2,
+  "kmeans_ari": 0.25422085727802207,
+  "spectral_ari": 1.0,
+  "method_disagreement_rate": 0.24666666666666667
+}

@@ -1,0 +1,8 @@
+{
+  "dataset": "unnormalized_3d_double_helix",
+  "n_samples": 300,
+  "knn_neighbors": 8,
+  "graph_connected_components": 1,
+  "research_kmeans_ari": -0.0026422073079791202,
+  "spectral_kmeans_ari": 1.0
+}

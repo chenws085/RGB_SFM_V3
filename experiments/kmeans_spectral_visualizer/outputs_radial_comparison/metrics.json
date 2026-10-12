@@ -1,0 +1,9 @@
+{
+  "dataset": "unnormalized_3d_radial_clusters",
+  "n_clusters": 3,
+  "n_samples": 240,
+  "knn_neighbors": 10,
+  "graph_connected_components": 1,
+  "research_kmeans_ari": 1.0,
+  "spectral_kmeans_ari": 1.0
+}
