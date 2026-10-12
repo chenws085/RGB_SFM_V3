@@ -2,6 +2,8 @@
 
 本專案說明 **MergingViT**（階層式 Vision Transformer）的訓練方式，以及對應的 **K-means / GradCAM / VLM** 特徵分析流程。
 
+近期研究主線、已完成證據、下一步與新環境重現缺口，請先閱讀[研究方向與交接脈絡](RESEARCH_CONTEXT.md)。
+
 ---
 
 ## 簡介
