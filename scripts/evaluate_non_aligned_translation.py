@@ -98,7 +98,15 @@ def report():
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--model',choices=list(CHECKPOINTS));p.add_argument('--device',default='cpu');p.add_argument('--workers',type=int,default=4);p.add_argument('--report-only',action='store_true');a=p.parse_args()
+    global OUT
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--model',choices=list(CHECKPOINTS));p.add_argument('--device',default='cpu');p.add_argument('--workers',type=int,default=4);p.add_argument('--report-only',action='store_true')
+    p.add_argument('--checkpoint',type=Path,help='Override selected model checkpoint for a separate training run')
+    p.add_argument('--output-dir',type=Path,default=OUT,help='Separate evaluation/cache/report directory')
+    a=p.parse_args()
+    OUT=ROOT/a.output_dir
+    if a.checkpoint:
+        if not a.model:p.error('--checkpoint requires --model')
+        CHECKPOINTS[a.model]=str(a.checkpoint)
     OUT.mkdir(parents=True,exist_ok=True)
     if a.report_only:report();return
     if not a.model:p.error('--model required')

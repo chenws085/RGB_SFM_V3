@@ -165,3 +165,16 @@ overnight_logs/
 !/plots/kmeans/caltech_non_aligned_1015/**/*.png
 !/plots/kmeans/caltech_corrected_center_1012/**/*.png
 !/plots/kmeans/caltech_corrected_center_1012/**/*.csv
+
+# Compact local restart/scale reports; weights and feature NPZ caches stay local.
+!/plots/kmeans/caltech_non_aligned_restart_1015/REPORT.md
+!/plots/kmeans/caltech_non_aligned_restart_1015/**/summary.csv
+!/plots/kmeans/caltech_non_aligned_restart_1015/**/run_manifest.json
+!/plots/kmeans/caltech_non_aligned_restart_1015/**/*.png
+!/plots/kmeans/caltech_scale_1015/REPORT.md
+!/plots/kmeans/caltech_scale_1015/primary_comparison.json
+!/plots/kmeans/caltech_scale_1015/status.json
+!/plots/kmeans/caltech_scale_1015/**/summary.csv
+!/plots/kmeans/caltech_scale_1015/**/classification.csv
+!/plots/kmeans/caltech_scale_1015/**/run_manifest.json
+!/plots/kmeans/caltech_scale_1015/**/*.png

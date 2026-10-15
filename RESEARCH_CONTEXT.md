@@ -155,3 +155,11 @@ Caltech-101 的 `obj_contour` 是相對 bounding box 的座標；舊流程漏加
 10/15 的 1–7 px 實驗已停止，不會自動繼續。既有 baseline 與 aligned augmentation 兩模型已完成相同 FAISS spherical 評估；新模型 training 完成至 epoch 10，最佳 checkpoint 亦 epoch 10，全類別原位 validation accuracy 48.25%，不是最終改善證據。Checkpoint／optimizer／scheduler 留在本機，只有 config／history／SHA256 快照公開。Trainer 尚無 resume，不能直接重跑當成續訓。接續細節、外部資料需求與未完成工作見[實施／暫停紀錄](plan/1015_non_aligned_translation_experiment.md)。
 
 下一階段的非對齊平移、尺度與自然語言概念研究方向見[roadmap](plan/1015_translation_scale_language_roadmap.md)。未收到後續指示前，不重啟已暫停的實驗。
+
+## 13. 本機重訓、尺度結果與傳檔服務（2026-10-15）
+
+使用者後續已授權下載官方資料並在本機從頭重訓，再排程尺度實驗。兩條 pipeline 均已完成：T1 best epoch 78／原位 validation 68.36%；S0 best epoch 63／63.28%；S1 best epoch 84／69.49%。尺度未見倍率 0.7／0.9／1.1 的平均 accuracy 為 S0 44.41%、S1 66.76%，Stage 2 bbox agreement 為 57.12%／71.32%。單一 seed 與使用過的 validation，不等同最終泛化證據。詳見[本機完成紀錄](plan/1015_local_training_results.md)。本節的新 run 不應與第 12 節原機暫停的 epoch-10 run 混用。
+
+已建立 HDD `D:\RGB_SFM_artifacts` 接收服務，LAN URL `https://192.168.100.233:40115`，TLS＋bearer，私密 credential 留在 Git 外。使用者指定優先讓遠端 `140.115.51.165:40008` root agent 上傳權重／資料集，未主動把本機權重送過去。本機與 LAN 入口路徑已測試，遠端首次連線／資料同步仍待執行；[操作教學與狀態](plan/1015_artifact_transfer_service.md)。
+
+語言需求更新為自動發現／命名聚類，避免人工從採樣圖歸納作主流程。已完成 [CLIP／LLaMA／GroupViT 可行性評估](plan/1015_language_alignment_feasibility.md)，建議先預訓練視覺語言模型的自動群描述，再凍結 backbone 學小 head；真正讓 grouping 學語意則需獨立圖文監督訓練。尚未啟動語言訓練。

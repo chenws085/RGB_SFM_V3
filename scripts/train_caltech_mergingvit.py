@@ -78,6 +78,16 @@ class AlignedTranslation:
         return translated
 
 
+class RandomScaleLetterbox:
+    """Resize directly from the source; keep validation at the reference size."""
+
+    def __init__(self, sizes):
+        self.sizes = tuple(sizes)
+
+    def __call__(self, image):
+        return CenterLetterbox(random.choice(self.sizes))(image)
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", default="data")
@@ -91,12 +101,19 @@ def parse_args():
     parser.add_argument("--aligned-translation", action="store_true")
     parser.add_argument("--translation-shifts", type=int, nargs="+", help="Override augmentation magnitudes, e.g. 1 2 3 4 5 6 7")
     parser.add_argument("--content-size", type=int, default=160)
+    parser.add_argument("--scale-content-sizes", type=int, nargs="+",
+                        help="Training-only long-edge sizes; validation uses --content-size")
     parser.add_argument("--device", default="cuda:0" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
     if args.aligned_translation and args.translation_shifts is not None:
         parser.error("Use aligned-translation or translation-shifts, not both")
     if args.translation_shifts is not None and (min(args.translation_shifts) < 1 or len(set(args.translation_shifts)) != len(args.translation_shifts)):
         parser.error("translation-shifts must be distinct positive integers")
+    if args.scale_content_sizes:
+        if args.aligned_translation or args.translation_shifts:
+            parser.error("Scale experiment must run independently of translation")
+        if len(set(args.scale_content_sizes)) != len(args.scale_content_sizes) or not all(1 <= s <= 224 for s in args.scale_content_sizes):
+            parser.error("scale-content-sizes must be distinct integers within 1..224")
     max_shift = max(args.translation_shifts or ((8, 16, 32) if args.aligned_translation else (0,)))
     if not 1 <= args.content_size <= 224 - 2 * max_shift:
         parser.error("content-size and translation exceed safe canvas margin")
@@ -113,7 +130,7 @@ def set_seed(seed):
 def make_loaders(args):
     normalize = transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD)
     train_transform = transforms.Compose([
-        CenterLetterbox(args.content_size),
+        RandomScaleLetterbox(args.scale_content_sizes) if args.scale_content_sizes else CenterLetterbox(args.content_size),
         *([AlignedTranslation(args.translation_shifts or (8, 16, 32))] if args.aligned_translation or args.translation_shifts else []),
         transforms.RandomHorizontalFlip(),
         transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.2),
