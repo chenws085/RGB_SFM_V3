@@ -16,6 +16,7 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
 
 CHUNK = 1024 * 1024
+NAMESPACES = ('weights', 'datasets', 'notes')
 
 
 def digest(path):
@@ -58,11 +59,11 @@ class Handler(BaseHTTPRequestHandler):
     def file_path(self):
         path = unquote(urlsplit(self.path).path)
         if not path.startswith('/files/'):
-            raise ValueError('Expected /files/{weights|datasets}/relative/path')
+            raise ValueError('Expected /files/{weights|datasets|notes}/relative/path')
         relative = path[len('/files/'):]
         parts = relative.split('/')
-        if len(parts) < 2 or parts[0] not in ('weights', 'datasets'):
-            raise ValueError('Use weights/ or datasets/ namespace')
+        if len(parts) < 2 or parts[0] not in NAMESPACES:
+            raise ValueError('Use weights/, datasets/ or notes/ namespace')
         if any(not part or part in ('.', '..') or part.startswith('.') or
                any(c in part for c in ('\\', ':', '\x00', '\n', '\r')) for part in parts):
             raise ValueError('Invalid artifact path')
@@ -81,7 +82,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(200, dict(status='ok', free_bytes=shutil.disk_usage(self.server.root).free))
         if route == '/files':
             rows = []
-            for namespace in ('weights', 'datasets'):
+            for namespace in NAMESPACES:
                 for path in (self.server.root/namespace).rglob('*'):
                     if path.is_file() and not path.is_symlink() and path.resolve().is_relative_to(self.server.root):
                         rel = path.relative_to(self.server.root)
@@ -168,7 +169,7 @@ def main():
     if len(token) < 32: p.error('Use a random token of at least 32 characters')
     root = args.root.resolve()
     if not root.is_dir(): p.error('Artifact root must already exist on the intended disk')
-    for namespace in ('weights', 'datasets'): (root/namespace).mkdir(exist_ok=True)
+    for namespace in NAMESPACES: (root/namespace).mkdir(exist_ok=True)
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     server.daemon_threads = True
     server.root, server.token = root, token

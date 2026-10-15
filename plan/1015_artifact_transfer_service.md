@@ -11,9 +11,11 @@
 - 實際儲存：`D:\RGB_SFM_artifacts`，WSL 路徑 `/mnt/d/RGB_SFM_artifacts`。
 - 已透過 Windows Storage Spaces 的 VirtualDisk→PhysicalDisk 查證 D 槽對應 `ST3500418AS` HDD，並非只依 WSL ROTA 推測；建置時約 282 GiB 可用。
 
-目錄分為 `weights/` 與 `datasets/`。傳入內容視為 bytes：不自動載入 `.pth`、不解壓、不執行檔案，也不自動替換本機 training 使用的資料路徑。遠端資料先落在各自命名空間，確認版本後再接到實驗。
+目錄分為 `weights/`、`datasets/` 與 `notes/`。傳入內容視為 bytes：不自動載入 `.pth`、不解壓、不執行檔案，也不自動替換本機 training 使用的資料路徑。遠端資料先落在各自命名空間，確認版本後再接到實驗。
 
-**完成的連線驗證：** WSL localhost TLS health、Windows LAN IP 到 relay/backend 的 TLS health，以及檔案上下載 SHA256 驗證。**尚未完成：** 由 `140.115.51.165` 實際發起的連線／同步；本機測試不能證明遠端路由或防火牆全程可達。服務端目前尚無遠端資料集／權重入庫紀錄。
+**完成的連線驗證：** WSL localhost TLS health、Windows LAN IP 到 relay/backend 的 TLS health，以及檔案上下載 SHA256 驗證。後續使用者已通知遠端完成同步，且本機已實際查驗兩個 run 的 checkpoint/config/history 與 Caltech 官方 archives 入庫；hash 與現有 manifest／官方 MD5 一致。經 proxy 的 server log 顯示來源可能是 localhost，不能把 proxy IP 當成遠端主機身份。詳見[接收與比較紀錄](1015_remote_1014_comparison.md)。
+
+新增 `notes/` namespace 作雙 agent 文件通訊，與 weights／datasets 沿用同一 TLS/token；[共用筆記約定](../agent_notes/README.md)。此目錄與權重／資料集接收目錄之後可能持續新增內容，接續任務前先查目錄／list。
 
 ## 憑證與認證包
 
@@ -23,12 +25,12 @@
 
 - `client.py`：純 Python 3 標準函式庫，同步時不需安裝 PyTorch。
 - `server.crt`：用於驗證 TLS 的公有憑證。
-- `token`：授權讀寫兩個 namespaces 的私密 credential。
+- `token`：授權讀寫 weights／datasets／notes namespaces 的私密 credential。
 - `README.txt`：操作範例。
 
 TLS 憑證 SHA256 指紋：`E3:98:EC:01:08:CC:65:3D:DA:6C:F8:BE:AE:CD:75:8F:45:E5:B6:7B:AF:45:25:2E:C4:CF:8E:E9:02:12:0B:A6`。憑證一年效期，包含 LAN IP、localhost 與 tailnet 名稱／IP。client 必須使用隨包提供的 cert，不使用 `--insecure`。
 
-此包尚未傳到遠端；需由使用者以既有可信通道交給遠端 root agent。SSH 40008 已有回應，但本機沒有遠端登入金鑰；不把這點誤記為已建立 SSH tunnel。為準備 tunnel 產生的本機專用 key 尚未安裝到遠端，也未啟動 tunnel。
+遠端已完成首批檔案同步，後續 notes/ 沿用同一份 client、cert 與 token，無須重新交付認證。SSH 40008 已有回應，但本機沒有遠端登入金鑰，也未啟動 SSH tunnel；目前使用直接服務入口。為準備 tunnel 產生的本機專用 key 尚未安裝到遠端。
 
 ## 給遠端 root agent
 

@@ -160,6 +160,12 @@ Caltech-101 的 `obj_contour` 是相對 bounding box 的座標；舊流程漏加
 
 使用者後續已授權下載官方資料並在本機從頭重訓，再排程尺度實驗。兩條 pipeline 均已完成：T1 best epoch 78／原位 validation 68.36%；S0 best epoch 63／63.28%；S1 best epoch 84／69.49%。尺度未見倍率 0.7／0.9／1.1 的平均 accuracy 為 S0 44.41%、S1 66.76%，Stage 2 bbox agreement 為 57.12%／71.32%。單一 seed 與使用過的 validation，不等同最終泛化證據。詳見[本機完成紀錄](plan/1015_local_training_results.md)。本節的新 run 不應與第 12 節原機暫停的 epoch-10 run 混用。
 
-已建立 HDD `D:\RGB_SFM_artifacts` 接收服務，LAN URL `https://192.168.100.233:40115`，TLS＋bearer，私密 credential 留在 Git 外。使用者指定優先讓遠端 `140.115.51.165:40008` root agent 上傳權重／資料集，未主動把本機權重送過去。本機與 LAN 入口路徑已測試，遠端首次連線／資料同步仍待執行；[操作教學與狀態](plan/1015_artifact_transfer_service.md)。
+已建立 HDD `D:\RGB_SFM_artifacts` 接收服務，LAN URL `https://192.168.100.233:40115`，TLS＋bearer，私密 credential 留在 Git 外。使用者指定優先讓遠端 `140.115.51.165:40008` root agent 上傳權重／資料集，未主動把本機權重送過去。遠端首批同步已查驗完成，詳見第 14 節與[操作教學與狀態](plan/1015_artifact_transfer_service.md)。
 
 語言需求更新為自動發現／命名聚類，避免人工從採樣圖歸納作主流程。已完成 [CLIP／LLaMA／GroupViT 可行性評估](plan/1015_language_alignment_feasibility.md)，建議先預訓練視覺語言模型的自動群描述，再凍結 backbone 學小 head；真正讓 grouping 學語意則需獨立圖文監督訓練。尚未啟動語言訓練。
+
+## 14. 遠端接收區與雙 agent 筆記（2026-10-15）
+
+**持續記住的本機資料入口：`/mnt/d/RGB_SFM_artifacts/`（D 槽 HDD）。之後可能持續有遠端同步的新權重／資料；找檔時除了 repo 的 runs/ 與 data/，先檢查這裡。** `weights/remote140165/` 已有歷史 baseline 與 aligned_translation_1014 的 checkpoint/config/history；`datasets/remote140165/` 已有 Caltech 官方 archives，兩份權重與 archive hash 已確認。先前「尚無遠端資料入庫」狀態已更新。對照本機平移／尺度的新評估見[比較紀錄](plan/1015_remote_1014_comparison.md)。
+
+雙 agent 文件通訊在 `/mnt/d/RGB_SFM_artifacts/notes/`；本機寫 notes/local/，遠端寫 notes/remote140165/，以 UTC 唯一檔名逐則新增，不互相覆寫。接續任務時先看最新筆記，重要結論再整理進 plan/。Git 入口：[agent_notes/README.md](agent_notes/README.md)。遠端沿用現有 HTTPS client 的 notes/ namespace，無即時通知。
