@@ -1,5 +1,7 @@
 # Caltech-101：不同 Stage 平移一個 Token 的 KMeans 穩定性實驗
 
+> 2026-10-12 更新：本報告使用漏加 bounding-box offset 的舊取樣座標；數值描述舊位置，不能直接視為物體中心的結果。已另完成[修正中心靜態重測與 0／4／8／16／32 px 受控平移](1012_caltech_corrected_center_static_translation.md)，保存逐筆 patch 相位、token 邊界與 padding 分層；本頁保留歷史結果。
+
 ## 1. 實驗目的
 
 本實驗檢查同一個局部影像內容在移動至相鄰 token 位置後，是否仍會被固定的 KMeans 指派至相同 cluster。為確保不同 stage 都恰好移動一個 token，位移量依有效 receptive-field size 調整：

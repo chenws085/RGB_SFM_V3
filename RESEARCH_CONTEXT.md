@@ -67,7 +67,7 @@
 
 Caltech-101 的 `obj_contour` 是相對 bounding box 的座標；舊流程漏加 `box_coord` offset。修正後，在 Stage 0／1／2 分別有約 91.13%／84.58%／64.01% 的影像改落到不同 token。
 
-因此，舊 cache 上的 K-means、silhouette、ARI 與平移數值仍描述原取樣特徵，但**不能作為物體中心／物體部件分群的證據**。目前只完成稽核與代表圖對照，尚未完成修正座標後的完整重跑。
+因此，舊 cache 上的 K-means、silhouette、ARI 與平移數值仍描述原取樣特徵，但**不能作為物體中心／物體部件分群的證據**。2026-10-12 已完成原 Euclidean 方法 seed 42、n_init=50 的修正中心靜態重測（6,907 training／1,770 validation），及 160 張 airplanes 的四方向 0／4／8／16／32 px 平移，詳見[新實驗紀錄](plan/1012_caltech_corrected_center_static_translation.md)。尚未重跑修正座標後的三方法／20 seeds 比較。
 
 若繼續物體中心路線，必須修正座標、重新抽 training／validation／translated features、重新 fitting，再重算指標；新舊 cache 和 manifest 要有不同座標版本。輪廓點平均亦不是 mask 面積質心。詳見[座標稽核](plan/1005_caltech101_annotation_coordinate_audit.md)。
 
@@ -122,12 +122,36 @@ Caltech-101 的 `obj_contour` 是相對 bounding box 的座標；舊流程漏加
 
 ### 已確認的重現缺口（2026-10-12）
 
-根目錄 `.gitignore` 的 `test_*.py` 規則也排除研究用腳本。目前 Git 未追蹤 `scripts/test_caltech_translation_kmeans.py`，而介入及部分分群評估會 import 它；故 fresh clone 不能直接執行所有報告指令，甚至介入驗證也會受影響。
+根目錄 `.gitignore` 的 `test_*.py` 規則也排除研究用腳本。2026-10-12 修正中心重跑時已為 `scripts/test_caltech_translation_kmeans.py` 加入明確例外，讓介入及部分分群評估依賴的共享模組可納入版本控制；舊座標流程本身保持不變。
 
-`scripts/test_negative_silhouette_significance.py` 同樣未追蹤；報告中的連結尚未能在遠端直接打開。重現前需要取得並納入這些研究依賴，或把共享函式移到受追蹤模組。本次交接整理未修改這些腳本或忽略規則。
+`scripts/test_negative_silhouette_significance.py` 仍未追蹤；報告中的連結尚未能在遠端直接打開。重現該分析前需要另取得此依賴。
 
 不能只因精選圖表已上傳，就假定所有圖片連結或完整 pipeline 都可從乾淨 clone 重現。多數 cluster gallery 刻意未上傳；缺圖時先看 plots 範圍說明，再決定取得本機產物或重跑。
 
 ## 8. 下一次研究對話可直接使用的摘要
 
-> 我們在自訂階層式 MergingViT 上研究跨影像、位置條件式概念發現，主目標是依真實 patch merging 建立概念組合路徑，再以 activation intervention 驗證分類作用。原方法是 normalized-feature Euclidean K-means，不能稱為嚴格 spherical。20 seeds 的球面比較有小幅 cosine silhouette 改善，但沿用漏加 annotation bounding-box offset 的舊取樣特徵，尚未證明物體部件語意；修正物體中心實驗未重跑。10 月 9 日已完成固定位置 token 單概念／同層組合介入及功能驗證，只有 120 張 fitting／16 張 validation 的探索性結果，尚無跨層因果路徑。下一步先補重現依賴、固定取樣協定與匹配控制，再擴大介入及建立跨層圖。詳細來源、產物範圍與 fresh clone 缺口見本文件。
+> 我們在自訂階層式 MergingViT 上研究跨影像、位置條件式概念發現，主目標是依真實 patch merging 建立概念組合路徑，再以 activation intervention 驗證分類作用。原方法是 normalized-feature Euclidean K-means，不能稱為嚴格 spherical。20 seeds 的球面比較有小幅 cosine silhouette 改善，但沿用漏加 annotation bounding-box offset 的舊取樣特徵，尚未證明物體部件語意。10 月 12 日已完成修正物體中心的原 Euclidean seed-42 靜態重測與 airplanes 的 0／4／8／16／32 px 四方向平移，保留逐筆 patch 相位、邊界與 padding；三方法／20 seeds 尚待重跑。10 月 9 日已完成固定位置 token 單概念／同層組合介入及功能驗證，只有 120 張 fitting／16 張 validation 的探索性結果，尚無跨層因果路徑。下一步固定取樣協定與匹配控制，再擴大介入及建立跨層圖。詳細來源、產物範圍與 fresh clone 缺口見本文件。
+
+
+## 9. 使用者最新方法決定（2026-10-15）
+
+後續分群選用真正的 spherical K-means 實作，例如 FAISS `spherical=True`，而非僅將特徵預先 L2 正規化後套用 sklearn Euclidean KMeans。此決定尚未套用／重跑；10/14 平移增強實驗及換群案例仍屬原 sklearn 歐式方法，不能改稱球面法。詳見[實驗筆記](plan/1014_aligned_translation_augmentation.md)。
+
+
+## 10. 後續三方向規劃（2026-10-15）
+
+已整理[非對齊平移、尺度穩定與自然語言概念規劃](plan/1015_translation_scale_language_roadmap.md)。先做 FAISS spherical 基準與非對齊整數平移，再獨立測尺度／對應 ROI；不足時逐步加 consistency loss 或架構消融。語言線從群命名、獨立概念標註與檢索評估進到 stage projection，最後接原模型概念介入。此為規劃，尚未啟動新實驗；不要求所有固定 token 在尺度改變後硬性同群。
+
+
+## 11. 1–7 px 非對齊平移實驗（2026-10-15）
+
+依使用者要求已啟動[初步實驗](plan/1015_non_aligned_translation_experiment.md)：先對既有 baseline／aligned augmentation 模型測四方向 1–7 px，再從頭訓練全類別 1–7 px 平移增強模型；三模型統一用 FAISS spherical K-means，評估固定飛機／吊燈／腦部影像。啟動時 CUDA 無法使用，以 CPU 執行，預計數小時；實際狀態見 `overnight_logs/non_aligned_translation_1015/status.txt`，階段與結果見 `plots/kmeans/caltech_non_aligned_1015/REPORT.md`。不要把已啟動或中途報告當成已完成改善驗證。
+
+
+## 12. 最新狀態：使用者要求暫停並上傳 GitHub（2026-10-15）
+
+10/14 aligned augmentation 已完成：seed 42，best epoch 84，飛機 32 px accuracy 98.13%、prediction consistency 99.06%；此輪分群仍是 sklearn normalized-feature Euclidean。詳細比較、margin、深層非對齊與 66 張換群／不換群案例見[報告](plots/kmeans/caltech_aligned_translation_1014/REPORT.md)。
+
+10/15 的 1–7 px 實驗已停止，不會自動繼續。既有 baseline 與 aligned augmentation 兩模型已完成相同 FAISS spherical 評估；新模型 training 完成至 epoch 10，最佳 checkpoint 亦 epoch 10，全類別原位 validation accuracy 48.25%，不是最終改善證據。Checkpoint／optimizer／scheduler 留在本機，只有 config／history／SHA256 快照公開。Trainer 尚無 resume，不能直接重跑當成續訓。接續細節、外部資料需求與未完成工作見[實施／暫停紀錄](plan/1015_non_aligned_translation_experiment.md)。
+
+下一階段的非對齊平移、尺度與自然語言概念研究方向見[roadmap](plan/1015_translation_scale_language_roadmap.md)。未收到後續指示前，不重啟已暫停的實驗。

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import hashlib
 import random
 import sys
 from pathlib import Path
@@ -48,16 +49,33 @@ CONTENT_MAX_SIZE = 160
 class CenterLetterbox:
     """Keep the full source image in a centered 160-in-224 safe canvas."""
 
+    def __init__(self, content_size=160):
+        self.content_size = content_size
+
     def __call__(self, image):
         image = image.convert("RGB")
         width, height = image.size
-        scale = min(CONTENT_MAX_SIZE / width, CONTENT_MAX_SIZE / height)
+        scale = min(self.content_size / width, self.content_size / height)
         resized_width = max(1, round(width * scale))
         resized_height = max(1, round(height * scale))
         resized = TF.resize(image, [resized_height, resized_width], antialias=True)
         canvas = Image.new("RGB", (224, 224), CANVAS_RGB)
         canvas.paste(resized, ((224 - resized_width) // 2, (224 - resized_height) // 2))
         return canvas
+
+
+class AlignedTranslation:
+    """Translate the resized canvas before the original training augmentations."""
+    def __init__(self, shifts=(8, 16, 32)):
+        self.shifts = tuple(shifts)
+
+    def __call__(self, canvas):
+        choices = [(0, 0)] + [(dx*s, dy*s) for s in self.shifts
+                               for dx,dy in ((-1,0),(1,0),(0,-1),(0,1))]
+        dx, dy = choices[random.randrange(len(choices))]
+        translated = Image.new("RGB", canvas.size, CANVAS_RGB)
+        translated.paste(canvas, (dx,dy))
+        return translated
 
 
 def parse_args():
@@ -70,7 +88,19 @@ def parse_args():
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--patience", type=int, default=20)
     parser.add_argument("--seed", type=int, default=42)
-    return parser.parse_args()
+    parser.add_argument("--aligned-translation", action="store_true")
+    parser.add_argument("--translation-shifts", type=int, nargs="+", help="Override augmentation magnitudes, e.g. 1 2 3 4 5 6 7")
+    parser.add_argument("--content-size", type=int, default=160)
+    parser.add_argument("--device", default="cuda:0" if torch.cuda.is_available() else "cpu")
+    args = parser.parse_args()
+    if args.aligned_translation and args.translation_shifts is not None:
+        parser.error("Use aligned-translation or translation-shifts, not both")
+    if args.translation_shifts is not None and (min(args.translation_shifts) < 1 or len(set(args.translation_shifts)) != len(args.translation_shifts)):
+        parser.error("translation-shifts must be distinct positive integers")
+    max_shift = max(args.translation_shifts or ((8, 16, 32) if args.aligned_translation else (0,)))
+    if not 1 <= args.content_size <= 224 - 2 * max_shift:
+        parser.error("content-size and translation exceed safe canvas margin")
+    return args
 
 
 def set_seed(seed):
@@ -83,7 +113,8 @@ def set_seed(seed):
 def make_loaders(args):
     normalize = transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD)
     train_transform = transforms.Compose([
-        CenterLetterbox(),
+        CenterLetterbox(args.content_size),
+        *([AlignedTranslation(args.translation_shifts or (8, 16, 32))] if args.aligned_translation or args.translation_shifts else []),
         transforms.RandomHorizontalFlip(),
         transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.2),
         transforms.ToTensor(),
@@ -91,7 +122,7 @@ def make_loaders(args):
         transforms.RandomErasing(p=0.25, scale=(0.02, 0.25), ratio=(0.3, 3.3), value="random"),
     ])
     valid_transform = transforms.Compose([
-        CenterLetterbox(),
+        CenterLetterbox(args.content_size),
         transforms.ToTensor(),
         normalize,
     ])
@@ -143,10 +174,13 @@ def evaluate(model, loader, criterion, device):
 
 def main():
     args = parse_args()
+    torch.set_num_threads(4)
     set_seed(args.seed)
     output_dir = ROOT / args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    if (output_dir / "run_config.json").exists():
+        raise FileExistsError(f"Existing run: {output_dir}")
+    device = torch.device(args.device)
     train_loader, valid_loader = make_loaders(args)
     model = MergingViT(**MODEL_ARGS).to(device)
     criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
@@ -158,12 +192,17 @@ def main():
 
     config = {
         "dataset": "Caltech101",
-        "preprocessing": "centered safe-letterbox, full source resized to <=160 inside 224 canvas",
-        "content_max_size": CONTENT_MAX_SIZE,
+        "preprocessing": "safe-letterbox, full source resized to content_max_size inside 224 canvas",
+        "content_max_size": args.content_size,
         "input_shape": [224, 224],
         "model": {"name": "MergingViT", "args": MODEL_ARGS},
         "train_samples": len(train_loader.dataset),
         "valid_samples": len(valid_loader.dataset),
+        "train_indices": train_loader.dataset.indices,
+        "valid_indices": valid_loader.dataset.indices,
+        "runner_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "translation_choices": [[0,0]] + [[dx*s,dy*s] for s in (args.translation_shifts or (8,16,32)) for dx,dy in ((-1,0),(1,0),(0,-1),(0,1))] if args.aligned_translation or args.translation_shifts else [[0,0]],
+        "initialization": "from scratch",
         **vars(args),
     }
     (output_dir / "run_config.json").write_text(

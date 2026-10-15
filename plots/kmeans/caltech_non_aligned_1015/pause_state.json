@@ -1,0 +1,20 @@
+{
+  "status": "paused_by_user",
+  "paused_utc": "2026-10-15T10:17:42.691702+00:00",
+  "last_completed_epoch": 10,
+  "best_checkpoint_epoch": 10,
+  "best_validation_accuracy": 0.4824858757062147,
+  "best_airplanes_validation_accuracy": 0.98125,
+  "checkpoint_path": "runs/train/mergingvit_caltech101_non_aligned_1015/MergingViT_best.pth",
+  "checkpoint_sha256": "11b97b35d1c0de04aaf26dbe66057cfe30e02ba642e19a33fcaf3c6a1022295e",
+  "completed_evaluations": [
+    "baseline",
+    "aligned_8_16_32"
+  ],
+  "pending": [
+    "finish 1\u20137 px training",
+    "evaluate final 1\u20137 px checkpoint",
+    "final improvement comparison"
+  ],
+  "resume_note": "Processes terminated at user request. Best checkpoint and optimizer/scheduler remain local; no exact last-step RNG/data-loader state saved. Current trainer has no --resume. Fresh restart requires a new output-dir, or implement explicit checkpoint resume with documented continuity limits."
+}

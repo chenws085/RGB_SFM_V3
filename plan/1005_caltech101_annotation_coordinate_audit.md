@@ -78,3 +78,5 @@ Transformer 使用 self-attention，因此 token 網格框不等於完整感受�
 新舊 features cache 與 manifest 必須使用不同的座標版本，避免混用；不能只修改代表圖標示，就沿用舊群作為修正後物體中心的實驗結果。
 
 本次僅完成代表圖、中心對照與稽核紀錄，尚未重跑修正座標後的分群實驗。
+
+2026-10-12 後續：已完成修正座標後的 6,907 training／1,770 validation 靜態抽取、原 Euclidean KMeans（seed 42、n_init=50）重新 fitting，以及 160 張 held-out airplanes 的四方向 0／4／8／16／32 px 受控平移。詳見[靜態重測與平移紀錄](1012_caltech_corrected_center_static_translation.md)。本頁原數字與舊圖庫保留為歷史稽核。

@@ -1,0 +1,112 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 4.230054511405356,
+    "train_accuracy": 0.14362241204575069,
+    "learning_rate": 0.0002999262307746768,
+    "valid_loss": 3.7140785896171957,
+    "valid_accuracy": 0.25084745762711863,
+    "valid_airplanes_accuracy": 0.94375,
+    "valid_samples": 1770,
+    "valid_airplanes_samples": 160
+  },
+  {
+    "epoch": 2,
+    "train_loss": 3.61745501344691,
+    "train_accuracy": 0.28362530765889676,
+    "learning_rate": 0.00029970499590002654,
+    "valid_loss": 3.2837930124358268,
+    "valid_accuracy": 0.3423728813559322,
+    "valid_airplanes_accuracy": 0.9375,
+    "valid_samples": 1770,
+    "valid_airplanes_samples": 160
+  },
+  {
+    "epoch": 3,
+    "train_loss": 3.337022565942745,
+    "train_accuracy": 0.3289416533951064,
+    "learning_rate": 0.0002993365137081604,
+    "valid_loss": 3.127714498703089,
+    "valid_accuracy": 0.3632768361581921,
+    "valid_airplanes_accuracy": 0.9375,
+    "valid_samples": 1770,
+    "valid_airplanes_samples": 160
+  },
+  {
+    "epoch": 4,
+    "train_loss": 3.1947787960238063,
+    "train_accuracy": 0.35775300419863904,
+    "learning_rate": 0.0002988211478465144,
+    "valid_loss": 3.0702691029694122,
+    "valid_accuracy": 0.37740112994350283,
+    "valid_airplanes_accuracy": 0.93125,
+    "valid_samples": 1770,
+    "valid_airplanes_samples": 160
+  },
+  {
+    "epoch": 5,
+    "train_loss": 3.0847623488725966,
+    "train_accuracy": 0.3772983929347039,
+    "learning_rate": 0.000298159406918973,
+    "valid_loss": 2.9790542438205354,
+    "valid_accuracy": 0.396045197740113,
+    "valid_airplanes_accuracy": 0.95,
+    "valid_samples": 1770,
+    "valid_airplanes_samples": 160
+  },
+  {
+    "epoch": 6,
+    "train_loss": 2.9887298222507703,
+    "train_accuracy": 0.39568553641233534,
+    "learning_rate": 0.0002973519439839389,
+    "valid_loss": 2.862288351651639,
+    "valid_accuracy": 0.43163841807909603,
+    "valid_airplanes_accuracy": 0.96875,
+    "valid_samples": 1770,
+    "valid_airplanes_samples": 160
+  },
+  {
+    "epoch": 7,
+    "train_loss": 2.913829736017846,
+    "train_accuracy": 0.4156652671203127,
+    "learning_rate": 0.00029639955590984266,
+    "valid_loss": 2.816459703714834,
+    "valid_accuracy": 0.4378531073446328,
+    "valid_airplanes_accuracy": 0.975,
+    "valid_samples": 1770,
+    "valid_airplanes_samples": 160
+  },
+  {
+    "epoch": 8,
+    "train_loss": 2.829437757964001,
+    "train_accuracy": 0.4360793398002027,
+    "learning_rate": 0.00029530318258873023,
+    "valid_loss": 2.8005577976420772,
+    "valid_accuracy": 0.4519774011299435,
+    "valid_airplanes_accuracy": 0.9625,
+    "valid_samples": 1770,
+    "valid_airplanes_samples": 160
+  },
+  {
+    "epoch": 9,
+    "train_loss": 2.7560197596648712,
+    "train_accuracy": 0.449688721586796,
+    "learning_rate": 0.0002940639060087029,
+    "valid_loss": 2.671018524223802,
+    "valid_accuracy": 0.4774011299435028,
+    "valid_airplanes_accuracy": 0.98125,
+    "valid_samples": 1770,
+    "valid_airplanes_samples": 160
+  },
+  {
+    "epoch": 10,
+    "train_loss": 2.7145312775815813,
+    "train_accuracy": 0.46054727088460984,
+    "learning_rate": 0.00029268294918612537,
+    "valid_loss": 2.649020612037788,
+    "valid_accuracy": 0.4824858757062147,
+    "valid_airplanes_accuracy": 0.98125,
+    "valid_samples": 1770,
+    "valid_airplanes_samples": 160
+  }
+]

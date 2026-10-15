@@ -1,0 +1,20 @@
+{
+  "status": "paused_by_user",
+  "note": "No weights or NPZ caches published. New 1\u20137px training stopped after epoch 10; evaluation incomplete.",
+  "artifacts_sha256": {
+    "training_config_at_pause.json": "3c16507868db4e4f19982ce265ec60a8948b7bbf4674b26b08026941e71c3b81",
+    "pause_state.json": "e1e697c2350ef03ec224e99801ea6e2b7d462b849af24e38fcaaf158e0b44106",
+    "training_history_at_pause.json": "89306d7f9e62ef4d72c5623e1d9972d33fce6c38a88582c418327e59e70bad0b",
+    "REPORT.md": "1ddd17154375036c2b9c18258a909c7dfdd913bae5097af305e8565a03897317",
+    "aligned_8_16_32/run_manifest.json": "d2c142e85cc4bf22840b082029d8cb8543b31c377feb9ac17f534f94ee5d6289",
+    "aligned_8_16_32/translation_stability.png": "68ffb33aa7c1b1589e6c85bcaacac4416bde32849a3fb018379913a48d1b2493",
+    "aligned_8_16_32/summary.csv": "a5bb263908b3fa20a706579f36a62986ab7252be3d755312111cb31601f5bb9b",
+    "aligned_8_16_32/paired_metrics.csv": "969b2e61d55fe6ed878883c0668e298b9255df76368afd6eda7787abc7dcd0fc",
+    "aligned_8_16_32/cache_identity.json": "c4ecef7bffb2c4804c58b39a5dc44ce8100454867b3618af3fc9b46f1c75689f",
+    "baseline/run_manifest.json": "c386fba52138abf56a58e07455c01053bdc7ce73235069cb9ff0a3be83c39969",
+    "baseline/translation_stability.png": "5a8e5bcc5d9bb26438a5e33784212751873602bc2c4f3bd5f448c6fbb749d5b1",
+    "baseline/summary.csv": "24f322e54aaec2cd37ac2c8eb46324ac2c2b31d92e7269f678e3a12de0df58b7",
+    "baseline/paired_metrics.csv": "01110fafe52e405d8cd537a24e3398a0dc321bdeec1f2eef5753aa22804b4776",
+    "baseline/cache_identity.json": "e0ef9e2832af937139e3cda43c6e2ff8eff97e05a4401533dfb782b5723e4b2c"
+  }
+}

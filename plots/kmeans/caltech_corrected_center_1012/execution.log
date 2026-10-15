@@ -1,0 +1,39 @@
+Extracting train: N=6907, dx=0, dy=0
+Extracting validation: N=1770, dx=0, dy=0
+Fitted/evaluated static stage 0: {'stage': 0, 'split': 'validation', 'samples': 1770, 'cosine_silhouette': 0.17567765712738037, 'negative_silhouette_fraction': 0.19491525423728814, 'used_clusters': 31, 'category_ami': 0.12373384138908954, 'category_ari': 0.05329355369630337, 'classification_accuracy': 0.6209039548022599, 'kmeans_inertia': 2903.262451171875, 'kmeans_iterations': 95}
+Fitted/evaluated static stage 1: {'stage': 1, 'split': 'validation', 'samples': 1770, 'cosine_silhouette': 0.10036376863718033, 'negative_silhouette_fraction': 0.2689265536723164, 'used_clusters': 31, 'category_ami': 0.14222208716821247, 'category_ari': 0.0700037049611758, 'classification_accuracy': 0.6209039548022599, 'kmeans_inertia': 3971.2587890625, 'kmeans_iterations': 68}
+Fitted/evaluated static stage 2: {'stage': 2, 'split': 'validation', 'samples': 1770, 'cosine_silhouette': 0.06469770520925522, 'negative_silhouette_fraction': 0.2790960451977401, 'used_clusters': 31, 'category_ami': 0.20280815606524247, 'category_ari': 0.1202904847748287, 'classification_accuracy': 0.6209039548022599, 'kmeans_inertia': 4122.623046875, 'kmeans_iterations': 59}
+Finished translation 0px original
+Extracting translation_4_left: N=160, dx=-4, dy=0
+Finished translation 4px left
+Extracting translation_4_right: N=160, dx=4, dy=0
+Finished translation 4px right
+Extracting translation_4_up: N=160, dx=0, dy=-4
+Finished translation 4px up
+Extracting translation_4_down: N=160, dx=0, dy=4
+Finished translation 4px down
+Extracting translation_8_left: N=160, dx=-8, dy=0
+Finished translation 8px left
+Extracting translation_8_right: N=160, dx=8, dy=0
+Finished translation 8px right
+Extracting translation_8_up: N=160, dx=0, dy=-8
+Finished translation 8px up
+Extracting translation_8_down: N=160, dx=0, dy=8
+Finished translation 8px down
+Extracting translation_16_left: N=160, dx=-16, dy=0
+Finished translation 16px left
+Extracting translation_16_right: N=160, dx=16, dy=0
+Finished translation 16px right
+Extracting translation_16_up: N=160, dx=0, dy=-16
+Finished translation 16px up
+Extracting translation_16_down: N=160, dx=0, dy=16
+Finished translation 16px down
+Extracting translation_32_left: N=160, dx=-32, dy=0
+Finished translation 32px left
+Extracting translation_32_right: N=160, dx=32, dy=0
+Finished translation 32px right
+Extracting translation_32_up: N=160, dx=0, dy=-32
+Finished translation 32px up
+Extracting translation_32_down: N=160, dx=0, dy=32
+Finished translation 32px down
+Complete: /home/ref/RGB_SFM_V3/plots/kmeans/caltech_corrected_center_1012

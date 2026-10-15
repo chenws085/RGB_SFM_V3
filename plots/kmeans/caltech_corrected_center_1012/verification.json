@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "paired_observations": 8160,
+  "static_pixel_checks": 8677,
+  "translated_content_checks": 2560,
+  "zero_shift_control": "passed",
+  "stage_aligned_token_displacement": "passed",
+  "grid_phase_checks": "passed",
+  "legacy_same_token_feature_equality": "passed",
+  "dependencies": {
+    "sklearn": "1.7.0",
+    "scipy": "1.15.3",
+    "torchvision": "0.19.1+cu124",
+    "PIL": "11.2.1"
+  },
+  "verifier_sha256": "6d785628003abf616c28c2151b189bf2ed28a93f6f0f0473ad1aa9656dac65b7",
+  "legacy_sources_sha256": {
+    "plots/kmeans/spherical_comparison_1005_n50/run_manifest.json": "a272eef25e53590b92d983325f137a78c7ecc1755c6b1521dd9244fda4847cd5",
+    "plots/kmeans/spherical_comparison_1005_n50/features.npz": "beebe9c44e0af0d29f30e1f47eabe2fa2f4ab4edc4abafb1787a6b7b83158cf0",
+    "plots/kmeans/quality_evaluation_1005/heldout_features.npz": "2ed933f1c385ea421bcca5d6d833e404683bf96f6c2f1551c03d40961e174f08",
+    "plots/kmeans/quality_evaluation_1005/geometry_metrics.csv": "951b2c30cbc4b56e1389769a77bd7cb8370c988d8e2c41b69afa7eef994f7ff9"
+  }
+}

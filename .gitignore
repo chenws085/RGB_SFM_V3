@@ -144,3 +144,24 @@ latex_export/
 
 sweep_log_*
 overnight_logs/
+
+# Corrected Caltech object-center static/phase-controlled experiments (2026-10-12).
+!/scripts/test_caltech_translation_kmeans.py
+!/plots/kmeans/caltech_corrected_center_1012/*.csv
+!/plots/kmeans/caltech_corrected_center_1012/cache_identity.json
+!/plots/kmeans/caltech_corrected_center_1012/run_manifest.json
+!/plots/kmeans/caltech_corrected_center_1012/verification.json
+!/plots/kmeans/caltech_corrected_center_1012/translation_stability.png
+!/plots/kmeans/caltech_corrected_center_1012/execution.log
+
+# Published Caltech augmentation reports and compact artifacts (2026-10-14/15).
+!/plots/kmeans/caltech_aligned_translation_1014/**/*.md
+!/plots/kmeans/caltech_aligned_translation_1014/**/*.csv
+!/plots/kmeans/caltech_aligned_translation_1014/**/*.json
+!/plots/kmeans/caltech_aligned_translation_1014/**/*.png
+!/plots/kmeans/caltech_non_aligned_1015/**/*.md
+!/plots/kmeans/caltech_non_aligned_1015/**/*.csv
+!/plots/kmeans/caltech_non_aligned_1015/**/*.json
+!/plots/kmeans/caltech_non_aligned_1015/**/*.png
+!/plots/kmeans/caltech_corrected_center_1012/**/*.png
+!/plots/kmeans/caltech_corrected_center_1012/**/*.csv
