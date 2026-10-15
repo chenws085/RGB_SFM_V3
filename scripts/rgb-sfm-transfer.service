@@ -1,0 +1,22 @@
+[Unit]
+Description=RGB SFM authenticated artifact inbox on HDD
+After=network.target
+RequiresMountsFor=/mnt/d/RGB_SFM_artifacts
+
+[Service]
+Type=simple
+User=chenws
+WorkingDirectory=/home/chenws/code/RGB_SFM_V3
+ExecStartPre=/usr/bin/mountpoint -q /mnt/d
+ExecStart=/home/chenws/code/RGB_SFM_V3/.venv/bin/python -u scripts/artifact_transfer_server.py --root /mnt/d/RGB_SFM_artifacts --token-file /home/chenws/.local/share/rgb-sfm-transfer/token --cert /home/chenws/.local/share/rgb-sfm-transfer/server.crt --key /home/chenws/.local/share/rgb-sfm-transfer/server.key --host 0.0.0.0 --port 40115 --allow 140.115.51.165/32 --allow 172.16.0.0/12
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/mnt/d/RGB_SFM_artifacts
+PrivateTmp=yes
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
