@@ -1,0 +1,36 @@
+[
+  {
+    "name": "remote_baseline",
+    "path": "/mnt/d/RGB_SFM_artifacts/weights/remote140165/mergingvit_caltech101_letterbox160/MergingViT_best.pth",
+    "sha256": "3cf8ab1056dfb025aa63c349e4d06e3ef49e519418fceb7798f49af1be39daca",
+    "epoch": 66,
+    "original_validation_accuracy": 0.6209039548022599,
+    "config_sha256": "371f4a2bc29cc7a2695831fb2c101634c62132cc5788704265f2cbdb4506f493",
+    "history_sha256": "7997b6548c37779cb714c12abaea4e73793fd1af7820371a1b8a132a1671652e",
+    "historical_checkpoint_match": true,
+    "split_evidence": "historical evaluation manifest (old config has no indices)"
+  },
+  {
+    "name": "aligned_1014",
+    "path": "/mnt/d/RGB_SFM_artifacts/weights/remote140165/mergingvit_caltech101_aligned_translation_1014/MergingViT_best.pth",
+    "sha256": "c7fe1d1125494c7cc7459cf1324419673d94977d2f141a3d88faa63372239a63",
+    "epoch": 84,
+    "original_validation_accuracy": 0.6570621468926554,
+    "config_sha256": "7db09720d77e14884a79311a4b3e6aad306497b7a148950868ca1726d8e3e97c",
+    "history_sha256": "230783605ba165adcd510c529f8d04acf1e512cd216a1f7059e9a6866aee1a5e",
+    "historical_checkpoint_match": true,
+    "split_evidence": "run_config and historical evaluation"
+  },
+  {
+    "dataset_archive": "/mnt/d/RGB_SFM_artifacts/datasets/remote140165/caltech101_official_archives/101_ObjectCategories.tar.gz",
+    "md5": "b224c7392d521a49829488ab0f1120d9",
+    "sha256": "af6ece2f339791ca20f855943d8b55dd60892c0a25105fcd631ee3d6430f9926",
+    "official_md5_match": true
+  },
+  {
+    "dataset_archive": "/mnt/d/RGB_SFM_artifacts/datasets/remote140165/caltech101_official_archives/Annotations.tar",
+    "md5": "6f83eeb1f24d99cab4eb377263132c91",
+    "sha256": "1717f4e10aa837b05956e3f4c94456527b143eec0d95e935028b30aff40663d8",
+    "official_md5_match": true
+  }
+]

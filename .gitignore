@@ -178,3 +178,15 @@ overnight_logs/
 !/plots/kmeans/caltech_scale_1015/**/classification.csv
 !/plots/kmeans/caltech_scale_1015/**/run_manifest.json
 !/plots/kmeans/caltech_scale_1015/**/*.png
+
+# Remote 10/14 checkpoint comparison: publish summaries, keep feature caches local.
+!/plots/kmeans/caltech_remote_1014_comparison/REPORT.md
+!/plots/kmeans/caltech_remote_1014_comparison/status.json
+!/plots/kmeans/caltech_remote_1014_comparison/intake_manifest.json
+!/plots/kmeans/caltech_remote_1014_comparison/paired_comparison.json
+!/plots/kmeans/caltech_remote_1014_comparison/scale_comparison.csv
+!/plots/kmeans/caltech_remote_1014_comparison/translation_comparison.csv
+!/plots/kmeans/caltech_remote_1014_comparison/**/classification.csv
+!/plots/kmeans/caltech_remote_1014_comparison/**/summary.csv
+!/plots/kmeans/caltech_remote_1014_comparison/**/run_manifest.json
+!/plots/kmeans/caltech_remote_1014_comparison/**/*.png

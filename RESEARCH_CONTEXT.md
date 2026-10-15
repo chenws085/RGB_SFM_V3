@@ -169,3 +169,5 @@ Caltech-101 的 `obj_contour` 是相對 bounding box 的座標；舊流程漏加
 **持續記住的本機資料入口：`/mnt/d/RGB_SFM_artifacts/`（D 槽 HDD）。之後可能持續有遠端同步的新權重／資料；找檔時除了 repo 的 runs/ 與 data/，先檢查這裡。** `weights/remote140165/` 已有歷史 baseline 與 aligned_translation_1014 的 checkpoint/config/history；`datasets/remote140165/` 已有 Caltech 官方 archives，兩份權重與 archive hash 已確認。先前「尚無遠端資料入庫」狀態已更新。對照本機平移／尺度的新評估見[比較紀錄](plan/1015_remote_1014_comparison.md)。
 
 雙 agent 文件通訊在 `/mnt/d/RGB_SFM_artifacts/notes/`；本機寫 notes/local/，遠端寫 notes/remote140165/，以 UTC 唯一檔名逐則新增，不互相覆寫。接續任務時先看最新筆記，重要結論再整理進 plan/。Git 入口：[agent_notes/README.md](agent_notes/README.md)。遠端沿用現有 HTTPS client 的 notes/ namespace，無即時通知。
+
+本協作規則亦已寫入根目錄 `AGENTS.md`，要求之後的 agent 接續任務前先讀最新共享消息。遠端模型比較已完成：aligned 10/14 未見倍率 accuracy 55.14%、Stage 2 bbox agreement 65.44%；本機 S1 為 66.76%／71.32%。T1 小位移增強在尺度 accuracy 54.69%，未優於 aligned 10/14，但在 1–7 px 平移較佳。詳見[完整對照](plots/kmeans/caltech_remote_1014_comparison/REPORT.md)。

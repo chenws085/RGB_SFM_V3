@@ -18,7 +18,7 @@
 | 權重 | best epoch | 原位 validation accuracy | SHA256 |
 |---|---:|---:|---|
 | 遠端 baseline | 66 | 62.09% | `3cf8ab1056dfb025aa63c349e4d06e3ef49e519418fceb7798f49af1be39daca` |
-| 遠端 aligned 10/14 | 84 | 65.71% | 見 intake_manifest.json；已與歷史 spherical 評估 manifest 比對一致 |
+| 遠端 aligned 10/14 | 84 | 65.71% | `c7fe1d1125494c7cc7459cf1324419673d94977d2f141a3d88faa63372239a63` |
 
 兩份權重皆與 Git 中歷史 1–7 px spherical 評估的 checkpoint hash 完全相符；相同 seed-42 train／validation source 集合與本機一致。舊 baseline config 沒有保存逐筆 indices，該組 split 的證據來自綁定相同 checkpoint 的歷史評估 manifest，不宣稱 config 自己就能證明。
 
@@ -33,4 +33,18 @@
 - 平移：由相同權重 hash 驗證，可重用已完成 1–7 px spherical 評估，與本機 T1 比較。不是把原 10/14 sklearn Euclidean 分群當作 spherical 結果，也不是新的獨立重複。
 - 額外比較皆屬探索性。遠端／本機不同 training run／環境，主要單變因尺度對照仍是本機 S0／S1。
 
-狀態／產物：`plots/kmeans/caltech_remote_1014_comparison/status.json`、`intake_manifest.json`、`REPORT.md`；log 為 `overnight_logs/remote_1014_comparison/evaluation.log`。已啟動兩個遠端模型的尺度評估，完成與否以 status.json 為準，不能將已排程當成完成。
+狀態／產物：`plots/kmeans/caltech_remote_1014_comparison/status.json`、`intake_manifest.json`、`REPORT.md`；log 為 `overnight_logs/remote_1014_comparison/evaluation.log`。已於 2026-10-15 12:02 UTC 完成，status 為 complete。
+
+## 完成結果
+
+| 模型 | 原位 accuracy | 未見倍率 accuracy | Stage 2 bbox agreement |
+|---|---:|---:|---:|
+| 遠端 baseline | 62.09% | 44.63% | 57.66% |
+| 遠端 aligned 10/14 | 65.71% | 55.14% | 65.44% |
+| 本機 S0 | 63.28% | 44.41% | 57.12% |
+| 本機 S1 尺度增強 | 69.49% | 66.76% | 71.32% |
+| 本機 T1 小位移增強 | 68.36% | 54.69% | 68.08% |
+
+S1 相對 aligned 10/14 的未見倍率 accuracy +11.62 pp、ROI agreement +5.88 pp。T1 的未見倍率 accuracy 比 aligned 10/14 低 0.45 pp，配對影像 CI 跨 0，這輪不能說小位移增強優於 aligned 模型的尺度泛化。另在三類 1–7 px 平移，T1 accuracy 90.77%、prediction consistency 97.35%，高於 aligned 10/14 的 87.78%／93.32%。
+
+值得注意：aligned 10/14 的 Stage 2 bbox cosine 為 0.8783，高於 S1 的 0.8633，但 accuracy 與 hard agreement 都較低；不能以單一 cosine 排名代替分類或概念品質結論。完整表與探索性配對 bootstrap 見[比較報告](../plots/kmeans/caltech_remote_1014_comparison/REPORT.md)。
