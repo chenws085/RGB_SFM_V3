@@ -1,0 +1,30 @@
+{
+  "source_index": 2216,
+  "category": "airplanes",
+  "seed": 42,
+  "epoch_zero_based": 3,
+  "source_bbox": [
+    54,
+    30,
+    350,
+    133
+  ],
+  "view_geometry": [
+    [
+      64,
+      22,
+      67,
+      91
+    ],
+    [
+      128,
+      44,
+      39,
+      104
+    ]
+  ],
+  "scripts": {
+    "dataloader/ObjectScalePairs.py": "636861f6397df50e5f54b9cac9d515c4ad5b613f971d42d927207c4210450522",
+    "scripts/plot_clip_training_flow.py": "d8af2790c1f4085d9abcf0a745141c91f300f3b9c2cef2a151f51f44bad0919a"
+  }
+}
