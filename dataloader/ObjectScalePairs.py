@@ -33,9 +33,9 @@ def object_crop(base, index):
 
 
 class ObjectScalePairs(Dataset):
-    def __init__(self, root, indices, training=True, seed=42, epoch=0):
+    def __init__(self, root, indices, training=True, seed=42, epoch=0, no_translation=False):
         self.base=Caltech101(root,target_type=['category','annotation'])
-        self.indices=list(indices);self.training=training;self.seed=seed;self.epoch=epoch
+        self.indices=list(indices);self.training=training;self.seed=seed;self.epoch=epoch;self.no_translation=no_translation
 
     def __len__(self):return len(self.indices)
 
@@ -56,6 +56,7 @@ class ObjectScalePairs(Dataset):
         for view in range(2):
             length=int(rng.choice([64,96,128])) if self.training else [96,80][view]
             dx,dy=rng.integers(-16,17,size=2) if self.training else ([0,0] if view==0 else [7,-5])
+            if self.no_translation:dx,dy=0,0
             scale=length/max(image.size);w=max(1,round(image.width*scale));h=max(1,round(image.height*scale))
             ox=(224-w)//2+int(dx);oy=(224-h)//2+int(dy)
             assert 0<=ox<=224-w and 0<=oy<=224-h

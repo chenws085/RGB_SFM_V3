@@ -178,6 +178,29 @@ overnight_logs/
 !/plots/kmeans/caltech_scale_1015/**/classification.csv
 !/plots/kmeans/caltech_scale_1015/**/run_manifest.json
 !/plots/kmeans/caltech_scale_1015/**/*.png
+# Scale internal-state pilot: keep reports and small evidence, exclude raw activations.
+!/plots/kmeans/caltech_scale_1015/INTERNAL_ANALYSIS.md
+!/plots/kmeans/caltech_scale_1015/internal_1020/**/*.md
+!/plots/kmeans/caltech_scale_1015/internal_1020/**/*.json
+!/plots/kmeans/caltech_scale_1015/internal_1020/**/*.csv
+
+# Unified aligned/non-aligned translation analysis (2026-10-20).
+!/plots/kmeans/caltech_mixed_translation_1020/*.md
+!/plots/kmeans/caltech_mixed_translation_1020/*.csv
+!/plots/kmeans/caltech_mixed_translation_1020/*.json
+!/plots/kmeans/caltech_mixed_translation_1020/*.png
+!/plots/kmeans/caltech_mixed_translation_1020/*/summary.csv
+!/plots/kmeans/caltech_mixed_translation_1020/*/run_manifest.json
+
+# Stratified 101-class translation figures and compact evidence (2026-10-20).
+!/plots/kmeans/caltech_allclass_translation_1020/*.md
+!/plots/kmeans/caltech_allclass_translation_1020/*.txt
+!/plots/kmeans/caltech_allclass_translation_1020/*.csv
+!/plots/kmeans/caltech_allclass_translation_1020/*.json
+!/plots/kmeans/caltech_allclass_translation_1020/*.png
+!/plots/kmeans/caltech_allclass_translation_1020/*/summary.csv
+!/plots/kmeans/caltech_allclass_translation_1020/*/run_manifest.json
+!/plots/kmeans/caltech_mixed_translation_1020/REPORT.txt
 
 # Remote 10/14 checkpoint comparison: publish summaries, keep feature caches local.
 !/plots/kmeans/caltech_remote_1014_comparison/REPORT.md

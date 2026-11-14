@@ -1,0 +1,7 @@
+group,before,after,better,same,worse
+non_aligned_1_7,baseline,aligned_8_16_32,76,3,22
+non_aligned_1_7,baseline,augment_1_7,84,6,11
+non_aligned_1_7,aligned_8_16_32,augment_1_7,61,11,29
+patch_aligned_8_16_32,baseline,aligned_8_16_32,85,5,11
+patch_aligned_8_16_32,baseline,augment_1_7,84,2,15
+patch_aligned_8_16_32,aligned_8_16_32,augment_1_7,32,6,63

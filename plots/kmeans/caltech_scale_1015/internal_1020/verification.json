@@ -1,0 +1,6 @@
+{
+  "identity_max_abs_error": 1.9073486328125e-06,
+  "checks": 63,
+  "reference_cosine_min": 0.9999998807907104,
+  "reference_agreement_min": 0.9999999403953552
+}

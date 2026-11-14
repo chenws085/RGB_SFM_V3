@@ -1,0 +1,47 @@
+{
+  "baseline": {
+    "rows": 33128,
+    "checkpoint_matches_historical": true,
+    "small_shift_max_abs_delta": {
+      "accuracy": 0.0,
+      "prediction_consistency": 0.0,
+      "cluster_agreement": 0.0,
+      "token_cosine": 3.02679836194919e-08,
+      "spherical_margin": 7.74860382940501e-08
+    },
+    "aligned_historical_airplanes": {
+      "accuracy_max_delta": 0.0,
+      "prediction_consistency_max_delta": 0.0,
+      "token_cosine_max_delta": 8.940696627490752e-09,
+      "note": "Cluster assignments intentionally not compared: Euclidean versus spherical."
+    }
+  },
+  "aligned_8_16_32": {
+    "rows": 33128,
+    "checkpoint_matches_historical": true,
+    "small_shift_max_abs_delta": {
+      "accuracy": 0.0,
+      "prediction_consistency": 0.0,
+      "cluster_agreement": 0.0,
+      "token_cosine": 5.689534288144671e-08,
+      "spherical_margin": 3.657557740011086e-08
+    },
+    "aligned_historical_airplanes": {
+      "accuracy_max_delta": 0.0,
+      "prediction_consistency_max_delta": 1.1102230246251565e-16,
+      "token_cosine_max_delta": 8.638016857354103e-09,
+      "note": "Cluster assignments intentionally not compared: Euclidean versus spherical."
+    }
+  },
+  "augment_1_7": {
+    "rows": 33128,
+    "checkpoint_matches_historical": true,
+    "small_shift_max_abs_delta": {
+      "accuracy": 0.0,
+      "prediction_consistency": 0.0,
+      "cluster_agreement": 0.0,
+      "token_cosine": 1.4901161193847656e-08,
+      "spherical_margin": 4.4703483595420757e-08
+    }
+  }
+}

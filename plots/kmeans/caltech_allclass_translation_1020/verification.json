@@ -1,0 +1,23 @@
+{
+  "baseline": {
+    "verified_pairs": 82820,
+    "overlapping_historical_pairs": 2460,
+    "overlap_predictions_and_clusters_identical": true,
+    "max_overlap_cosine_delta": 2.384185791015625e-07,
+    "frozen_centers_exactly_identical": true
+  },
+  "aligned_8_16_32": {
+    "verified_pairs": 82820,
+    "overlapping_historical_pairs": 2460,
+    "overlap_predictions_and_clusters_identical": true,
+    "max_overlap_cosine_delta": 2.384185792125848e-07,
+    "frozen_centers_exactly_identical": true
+  },
+  "augment_1_7": {
+    "verified_pairs": 82820,
+    "overlapping_historical_pairs": 2460,
+    "overlap_predictions_and_clusters_identical": true,
+    "max_overlap_cosine_delta": 2.384185792125848e-07,
+    "frozen_centers_exactly_identical": true
+  }
+}

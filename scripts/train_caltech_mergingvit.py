@@ -98,6 +98,10 @@ def parse_args():
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--patience", type=int, default=20)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--attention-mode", choices=["global", "window", "sliding"], default="global")
+    parser.add_argument("--window-size", type=int, default=7)
+    parser.add_argument("--attention-stages", type=int, nargs="+", default=None)
+    parser.add_argument("--window-offset", type=int, default=0)
     parser.add_argument("--aligned-translation", action="store_true")
     parser.add_argument("--translation-shifts", type=int, nargs="+", help="Override augmentation magnitudes, e.g. 1 2 3 4 5 6 7")
     parser.add_argument("--content-size", type=int, default=160)
@@ -197,9 +201,17 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     if (output_dir / "run_config.json").exists():
         raise FileExistsError(f"Existing run: {output_dir}")
+    snapshot = output_dir / "source_snapshot"
+    for relative in ["scripts/train_caltech_mergingvit.py","models/MergingViT.py","models/WindowAttention.py","dataloader/Caltech101.py"]:
+        dest = snapshot / relative
+        dest.parent.mkdir(parents=True,exist_ok=True)
+        dest.write_bytes((ROOT/relative).read_bytes())
     device = torch.device(args.device)
     train_loader, valid_loader = make_loaders(args)
-    model = MergingViT(**MODEL_ARGS).to(device)
+    model = MergingViT(**MODEL_ARGS)
+    from models.WindowAttention import configure_attention
+    configure_attention(model,args.attention_mode,args.window_size,args.attention_stages,args.window_offset)
+    model = model.to(device)
     criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
     optimizer = AdamW(model.parameters(), lr=args.lr, weight_decay=0.01)
     scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=1e-6)
